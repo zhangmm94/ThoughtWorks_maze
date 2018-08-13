@@ -1,1 +1,0 @@
-/usr/bin/c++      CMakeFiles/maze.dir/main.cpp.o  -o maze -rdynamic ../lib/libMaze.so -Wl,-rpath,/home/zhangmi/Downloads/ThoughtWorks_maze/lib 
