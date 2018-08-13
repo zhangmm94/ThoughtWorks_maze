@@ -1,0 +1,22 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+.././include/maze.h
+string
+-
+vector
+-
+ostream
+-
+
+/home/zhangmi/Downloads/ThoughtWorks_maze/src/maze.cpp
+iostream
+-
+maze.h
+/home/zhangmi/Downloads/ThoughtWorks_maze/src/maze.h
+
