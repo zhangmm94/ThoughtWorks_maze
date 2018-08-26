@@ -1,1 +1,0 @@
-/usr/bin/c++ -fPIC -g  -shared -Wl,-soname,libMaze.so -o ../lib/libMaze.so CMakeFiles/Maze.dir/src/maze.cpp.o CMakeFiles/Maze.dir/src/accessgrid.cpp.o 

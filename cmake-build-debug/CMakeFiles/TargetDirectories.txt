@@ -1,4 +1,0 @@
-/home/liu/my_progs/example/maze/ThoughtWorks_maze/cmake-build-debug/CMakeFiles/edit_cache.dir
-/home/liu/my_progs/example/maze/ThoughtWorks_maze/cmake-build-debug/CMakeFiles/maze.dir
-/home/liu/my_progs/example/maze/ThoughtWorks_maze/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-/home/liu/my_progs/example/maze/ThoughtWorks_maze/cmake-build-debug/CMakeFiles/Maze.dir
