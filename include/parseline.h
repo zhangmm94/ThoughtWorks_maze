@@ -5,6 +5,9 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include <regex>
+
+#include "accessgrid.h"
 
 namespace zhangmi
 {
@@ -49,7 +52,7 @@ public:
         return true;
     }
 
-    bool check_second_line(const std::string& _strin, std::vector<std::vector<int> >& _vout)
+    bool check_second_line(const std::string& _strin, std::vector<AccessGrid>& _vout)
     {
         std::vector<std::string> grid_connect_data;
 
@@ -81,7 +84,7 @@ public:
                     return false;
                 }
 
-                std::vector<int> vout = {first_row, first_col, second_row, second_col};
+                AccessGrid vout(first_row * 2 + 1, first_col * 2 + 1, second_row * 2 + 1, second_col * 2 + 1);
                 _vout.push_back(vout);
             }
             else
@@ -93,6 +96,45 @@ public:
 
         return true;
     }
+
+    bool check_third_line(const std::string& _strin, std::vector<int>& _vstart,std::string& direction)
+    {
+        std::vector<std::string> command,begin_cell;
+        split_string(_strin, command, " ");
+
+        if(command.size() != 2)
+        {
+            std::cerr << "Incorrect command format​.\n";
+            return false;
+        }
+
+        split_string(command[0],begin_cell,",");
+
+        if(is_digits(begin_cell[0]) && is_digits(begin_cell[1]))
+        {
+            int row = std::atoi(begin_cell[0].c_str());
+            int col = std::atoi(begin_cell[1].c_str());
+            std::cout<<"startrow: "<<row<<"; startcol: "<<col<<std::endl;
+
+            if(row < 0 || col < 0 || row > max_gridsize/2 || col > max_gridsize/2)
+            {
+                std::cerr << "Number out of range​.​\n";
+                return false;
+            }
+            _vstart.push_back(row);
+            _vstart.push_back(col);
+        }
+        else
+        {
+            std::cerr << "Invalid number format​.\n";
+            return false;
+        }
+        if(command[1].empty()) return false;
+        direction=command[1];
+        std::cout<<"direction: "<<direction<<std::endl;
+        return true;
+    }
+
 
 
 private:
@@ -114,22 +156,8 @@ private:
 
     bool is_digits(const std::string &str)
     {
-        int i = str.find_first_not_of(' ');
-        if(str[i] == '-' || str[i] == '+')
-        {
-            if(str.size()>1)
-            {
-                i++;
-                while(str[i]>='0' && str[i] <= '9')
-                    i++;
-
-                if(i==str.size()) return true;
-            }
-        }
-        else if(str.find_first_not_of("0123456789") == std::string::npos)
-            return true;
-
-        return false;
+        std::regex rx("(\\+|-)?[0-9]+");
+        return std::regex_match(str.begin(),str.end(),rx);
     }
 
     std::string& replace_all(std::string& str,const std::string& old_value,const std::string& new_value)

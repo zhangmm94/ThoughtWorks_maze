@@ -1,10 +1,9 @@
 #include <iostream>
-
 #include "maze.h"
 
 namespace zhangmi
 {
-Maze::Maze(const int _row, const int _col):row(_row), col(_col)
+Maze::Maze(const int _row, const int _col)
 {
     create_maze(_row, _col);
 }
@@ -26,7 +25,7 @@ void Maze::print_maze()
     }
 }
 
-bool Maze::change_maze(const std::vector<std::vector<int> > _access)
+bool Maze::change_maze(const std::vector<zhangmi::AccessGrid> _access)
 {
     for(int i = 0; i < _access.size(); ++i)
     {
@@ -39,62 +38,72 @@ bool Maze::change_maze(const std::vector<std::vector<int> > _access)
     return true;
 }
 
-bool Maze::find_answer(const std::vector<int>& _access_grid, std::vector<int>& _answer_grid)
-{
-    int first_rows = _access_grid[0] * 2 + 1;
-    int first_cols = _access_grid[1] * 2 + 1;
-    int second_rows = _access_grid[2] * 2 + 1;
-    int second_cols = _access_grid[3] * 2 + 1;
 
-    if(first_rows == second_rows)
+bool Maze::hasPath( int i, int j, const std::string& str) {
+
+    i=2*i+1;
+    j=2*j+1;
+    //    std::cout<<"rows:"<<rows<<"; cols:"<<cols<<std::endl;
+    if (i < 0 || i >= rows || i < 0 || j >= cols) return false;
+    bool *visited = new bool[rows * cols];
+    for (int index = 0; index < rows * cols; index++)
+        visited[index] = false;
+    bool b = moving(i, j, 0, str, visited);
+    if (!b)
+        std::cerr << "the path is invalid.\n";
+    delete []visited;
+    return b;
+}
+
+bool Maze::moving(int i, int j, int k, std::string str, bool *visited) {
+    if (i < 0 || i >= rows || i < 0 || j >= cols || maze[i][j].get_name() == 'W' || visited[i * cols + j] == true)
+        return false;
+    if (str[k] == '\0')
     {
-        if(first_cols - 2 == second_cols)
-        {
-            _answer_grid.push_back(first_rows);
-            _answer_grid.push_back(first_cols - 1);
-            return true;// left
-        }
-        else if(second_cols - 2 == first_cols)
-        {
-            _answer_grid.push_back(first_rows);
-            _answer_grid.push_back(first_cols + 1);
-            return true;// right
-        }
-        else
-        {
-            std::cerr << "Maze format error.\n";
-            return false;// wrong
-        }
+        std::cout << "row: " << i << ",col: " << j << std::endl;
+        maze[i][j].change('A');
+        return true;
     }
-    else if(first_cols == second_cols)
-    {
-        if(first_rows == second_rows - 2)
-        {
-            _answer_grid.push_back(first_rows + 1);
-            _answer_grid.push_back(first_cols);
-            return true;// down
-        }
-        else if(second_rows == first_rows - 2)
-        {
-            _answer_grid.push_back(first_rows - 1);
-            _answer_grid.push_back(first_cols);
-            return true;// up
-        }
-        else
-        {
-            std::cerr << "Maze format error.\n";
-            return false;
-        }
-    }
+    visited[i * cols + j] = true;
+    bool OK;
+    std::cout<<str[k]<<std::endl;
+    if (str[k] == 'N')
+        OK = moving(i - 1,j,k + 1,str,visited);
+    else if (str[k] == 'S')
+        OK = moving(i + 1,j,k + 1,str,visited);
+    else if (str[k] == 'W')
+        OK = moving(i,j - 1,k + 1,str,visited);
+    else if (str[k] == 'E')
+        OK = moving(i,j + 1,k + 1,str,visited);
     else
     {
-        std::cerr << "Maze format error.\n";
+        std::cerr << "please input valid direction.\n";
         return false;
     }
+    return OK;
+
+}
+
+
+bool Maze::find_answer(const zhangmi::AccessGrid& _access_grid, std::vector<int>& _answer_grid)
+{
+    if(_access_grid.find_access(_answer_grid))
+    {
+        //add conditional
+        if(_answer_grid[0] > maze.size() - 1 || _answer_grid[1] > maze[0].size() - 1)
+        {
+            std::cerr << "Number out of range.";
+        }
+        else
+            return true;
+    }
+    return false;
 }
 
 void Maze::create_maze(int _row, int _col)
 {
+    rows=2*_row+1;
+    cols=2*_col+1;
     Grid grid_hinder('W');
     Grid grid_access('R');
 
